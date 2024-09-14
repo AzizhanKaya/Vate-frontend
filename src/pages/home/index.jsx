@@ -5,12 +5,12 @@ export default function Home(){
 
     return(
 
-        <>
+        <div className="overflow-hidden h-full">
             <StickyHeader title="Home Page">
 
             </StickyHeader>
             
             <Flow />
-        </>
+        </div>
     )
 }

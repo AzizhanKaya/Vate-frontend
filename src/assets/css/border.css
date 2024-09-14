@@ -1,0 +1,41 @@
+
+ 
+  @property --angle{
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+  
+  .cool-border::after, .cool-border::before{
+    content: '';
+    position: absolute;
+    
+    background-image: conic-gradient(from var(--angle), 
+    rgba(94, 207, 255, 0) 30%,
+    rgba(94, 207, 255, 1) 50%,
+    rgba(94, 207, 255, 0) 70%);
+    top: 50%;
+    left: 50%;
+    translate: -50% -50.1%;
+    height: calc(100% + 5px);
+    width: calc(100% + 5px);
+    z-index: -1;
+    border-radius: 0.75rem;
+    animation: 3s spin linear infinite;
+  }
+  .cool-border::before{
+    background-image: conic-gradient(from var(--angle), 
+    rgba(94, 207, 255, 0) 20%,
+    rgba(94, 207, 255, 1) 50%,
+    rgba(94, 207, 255, 0) 80%);
+    filter: blur(0.3rem);
+    opacity: 0.5;
+  }
+  @keyframes spin{
+    from{
+      --angle: 0deg;
+    }
+    to{
+      --angle: 360deg;
+    }
+  }
