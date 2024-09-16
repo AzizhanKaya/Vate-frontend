@@ -1,0 +1,15 @@
+[package]
+name = "wasm"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+k256 = "0.11"
+getrandom = { version = "0.2", features = ["js"] }
+tokio = { version = "1", features = ["rt", "time"] }
+sha256 = { version = "1.5.0", default-features = false }
+chrono = "0.4"
