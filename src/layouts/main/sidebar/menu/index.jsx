@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { MenuItems } from "./items";
 import classNames from "classnames";
-
+import '../../../../assets/css/border.css';
 
 
 export default function Menu(){
@@ -14,7 +14,7 @@ export default function Menu(){
 					{({isActive}) => (
 						<div
 							className={classNames("p-3 rounded-full transition-colors inline-flex items-center gap-5 group-hover:bg-[#eff3f41a]", {
-								"font-bold": isActive, "shadow-box": isActive
+								"font-bold shadow-box": isActive
 							})}>
 							<div className="w-[1.641rem] h-[1.641rem] relative ml-2">
 								{menu?.notification && (

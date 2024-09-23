@@ -1,33 +1,35 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-	currentAccount: {
-		id: 1,
-		username: 'Aziz',
-		avatar: 'https://pbs.twimg.com/profile_images/1637771089840422912/LES2dp5X_400x400.jpg',
-		pub_key: 'WwogICAgMiwKICAgIDIuNzUsCiAgICAyLjU4NDk2MjUwMDcyMTE1Ngpd'
-	},
-	accounts: []
-}
+    currentAccount: {
+        id: 1,
+        username: 'Aziz',
+        avatar: 'https://pbs.twimg.com/profile_images/1637771089840422912/LES2dp5X_400x400.jpg',
+        pub_key: 'WwogICAgMiwKICAgIDIuNzUsCiAgICAyLjU4NDk2MjUwMDcyMTE1Ngpd',
+        priv_key: null
+    }
+};
 
-const auth = createSlice({
-	name: 'auth',
-	initialState,
-	reducers: {
-		_addAccount: (state, action) => {
-			state.accounts.push(action.payload)
-		},
-		_removeAccount: (state, action) => {
-			state.accounts = state.accounts.filter(account => account.id !== action.payload)
-			if (state.currentAccount && action.payload === state.currentAccount.id) {
-				this._setCurrentAccount(false)
-			}
-		},
-		_setCurrentAccount: (state, action) => {
-			state.currentAccount = action.payload
-		}
-	}
-})
+const authSlice = createSlice({
+    name: 'auth',
+    initialState,
+    reducers: {
+        setAccount: (state, action) => {
+            state.currentAccount = action.payload;
+        },
+        removeAccount: (state) => {
+            state.currentAccount = null;
+        },
+        setPrivKey: (state, action) => {
+            if (state.currentAccount) {
+                state.currentAccount.priv_key = action.payload; 
+            }
+        }
+    }
+});
 
-export const { _addAccount, _setCurrentAccount, _removeAccount } = auth.actions
-export default auth.reducer
+
+export const { setAccount, removeAccount, setPrivKey} = authSlice.actions;
+
+
+export default authSlice.reducer;

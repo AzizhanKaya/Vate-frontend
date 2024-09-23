@@ -1,6 +1,7 @@
 import '../assets/css/border.css';
 import '../assets/css/fade.css';
 import Verify from './verify'
+
 export default function Post({ post }) {
     
     if (!post || !post.account || !post.content.message) {
@@ -9,7 +10,7 @@ export default function Post({ post }) {
   
     return (
       
-      <div className="px-4 pt-3 gap-3 border border-[#2f3336] flex rounded-xl mx-5 my-3 relative bg-black cool-border">
+      <div className="px-4 pt-3 gap-3 border border-[#2f3336] flex rounded-xl mx-5 my-3 relative bg-black cool-border r-xl">
         <img src={post.account.img} className="w-10 h-10 rounded-full object-cover" alt="" />
         <div className="flex-1 w-[90%]">
             <header className="leading-5 flex gap-2 items-center mb-0.5">
@@ -29,7 +30,7 @@ export default function Post({ post }) {
             </header>
             <div className="break-words hyphens-manual">
 
-              <img className="w-20 fade" src="../../public/chain-sticker.png" alt="" />
+              <img className="w-20 fade" src="/chain-sticker.png" alt="" />
 
             </div>
 

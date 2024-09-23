@@ -1,19 +1,22 @@
-import { Outlet } from "react-router-dom"
-import Sidebar from "./sidebar"
-import Rightbar from "./rightbar"
+import { Outlet } from "react-router-dom";
+import Sidebar from "./sidebar";
+import Rightbar from "./rightbar";
+import Modal from "../../pages/modal";
 
-export default function MainLayout(){
-
-    return(
-    <div className="w-[1265px] mx-auto flex">
-        <Sidebar />
-        <main className="flex-1 flex">
-            <main className="flex-1 max-w-[700px] border-x border-[#2f3336]">
-                <Outlet />
+export default function MainLayout() {
+    return (
+        <div className="w-[1265px] mx-auto flex">
+            <Sidebar />
+            <main className="flex-1 flex">
+                <main className="flex-1 max-w-[700px] border-x border-[#2f3336]">
+                    <Outlet />
+                </main>
+                <Rightbar />
             </main>
-            <Rightbar />
-        </main>
-        
-    </div>
-    )
+            <div className="z-30">
+                <Modal />
+            </div>
+            
+        </div>
+    );
 }

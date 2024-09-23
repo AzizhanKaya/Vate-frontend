@@ -50,10 +50,10 @@ export default function Account(){
 
 									<svg width="28px" height="28px" viewBox="0 0 50 50">
 										
-										<circle cx="25" cy="25" r="20" stroke="red" stroke-width="5" fill="none" />
+										<circle cx="25" cy="25" r="20" stroke="red" strokeWidth="5" fill="none" />
 										
 										
-										<line x1="15" y1="25" x2="35" y2="25" stroke="red" stroke-width="5" />
+										<line x1="15" y1="25" x2="35" y2="25" stroke="red" strokeWidth="5" />
 									</svg>
 
 									<span className="font-bold content-center text-lg"> Log out</span>
