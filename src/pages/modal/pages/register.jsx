@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { create_key } from '../../../wasm/wasm';
-import { div } from 'framer-motion/client';
 
-export default function Register() {
+export default function Register({goToBio}) {
 
     const [currentStep, setCurrentStep] = useState(0);
     const [displayedText, setDisplayedText] = useState('');
@@ -13,13 +12,15 @@ export default function Register() {
     const [key, setKey] = useState(get_key());
     const [copy, setCopy] = useState(false);
     const [icon, setIcon] = useState('copy');
+    const [isHidden, setIsHidden] = useState(false);
+    const [isSpinning, setSpinning] = useState(false);
 
     const dialogs = [
         "Hi! Welcome to Vate. I am your assistant, and I will help you.",
-        "Vate is a web3.0 social media project. If you don't know about web3.0, don't worry. That's what I'm here for.",
+        "Vate is a web3.0 social media project. If you don't know about web3.0, don't worry. That's why I'm here for.",
         "Vate wants to offer a more decentralized structure than other social media platforms. It uses web 3.0 technology for this. Let's create a key for you",
         "When you feel ready, choose a random key. The key will be what identifies you. Remember that the secret key you choose is your only connection to Vate!",
-        "Nice!! Now store the key where nobody can access. And never lose it."
+        "Nice! Store the key in a secure location where no one can access it, and ensure it is never lost."
     ];
 
     function get_key() {
@@ -38,20 +39,73 @@ export default function Register() {
         let index = 0;
         const interval = setInterval(() => {
             if (index < text.length) {
-                setDisplayedText((prev) => prev + text[index - 1]);
+                setDisplayedText((prev) => prev + text[index-1]);
                 index++;
             } else {
                 setIsAnimating(false);
                 clearInterval(interval);
             }
-        }, 30);
+        }, 10);
     };
 
+    function handleKey(){
+
+        const base64_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+        let iteration = 0;
+
+        let final = get_key()
+
+        if (isSpinning) return;
+
+        setSpinning(true);
+        let interval = setInterval(() => {
+            setKey((prevKey) => {
+                return prevKey.split("").map((letter, index) => {
+                    if (index < iteration) {
+                        return final[index];
+                    }
+                    return base64_chars[Math.floor(Math.random() * base64_chars.length)];
+                }).join("");
+            });
+            
+            
+            if(iteration >= 30){ 
+                clearInterval(interval);
+                setSpinning(false);
+                setKey(final);
+                return;
+            }
+            
+            iteration += 1;
+        }, 30);
+    }
+
+    const spinStyle = {
+        transition: 'transform 0.5s ease-in-out',
+        animation: isSpinning ? 'rotate 0.5s ease-in-out forwards' : 'none',
+    };
+
+    const spinAnimation = `
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+    `;
+    
+
+
     useEffect(() => {
-        if (currentStep < dialogs.length) {
+        if (currentStep < dialogs.length && !isAnimating) {
             animateText(dialogs[currentStep]);
         }
     }, [currentStep]);
+
+    
 
     const popOn = {
         hidden: {
@@ -72,20 +126,24 @@ export default function Register() {
         }
     };
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(key).then(() => {
+    const handleCopy = async () => {
+
+        if (isSpinning) return;
+
+        try {
+            await navigator.clipboard.writeText(key);
             setIcon('ok');
             setCopy(true);
             setCurrentStep(4);
             setTimeout(() => setIcon('copy'), 1000);
-        }).catch(err => {
+        } catch (err) {
             console.error("Failed to copy: ", err);
-        });
+        }
     };
 
     return (
         <div className="flex flex-col items-center mx-auto">
-            <div className="flex items-center">
+            <div className="flex items-center relative">
                 <img src="/vate-rabbit.png" className="w-[150px] object-cover" alt="Rabbit" />
                 <div className="grid">
                     <div className="bg-[#161718] p-4 ml-3 border border-[#fff] rounded shadow-lg relative w-[300px]">
@@ -131,16 +189,17 @@ export default function Register() {
             </div>
 
             {keyBox && (
-                <div className="flex relative mt-10 items-center">
+                <div className="flex mt-10 items-center relative">
                     <div className="absolute -top-[16px] left-[30px] font-[Vate] text-[#a4a6a8] font-bold text-[13px]">Secret Key</div>
                     <div className="w-[30px] h-[30px] text-xl">🔑</div>
                     <div className="relative overflow-hidden">
                         <input 
-                            className="w-[300px] h-9 bg-[#1b1d1f] text-white border border-[#2f3336] rounded px-2 focus:outline-none" 
+                            className="w-[300px] h-9 bg-[#1b1d1f] text-white border border-[#2f3336] rounded px-2 focus:outline-none"
+                            style={{ fontFamily: 'Space Mono, monospace' }}
                             type="text" 
                             id="secretKey"
+                            readOnly
                             value={key}
-                            onChange={(e) => setKey(key)}
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
                         />
@@ -155,7 +214,7 @@ export default function Register() {
                         >
                             <button 
                                 onClick={handleCopy}
-                                className="rounded w-[28px] h-[28px] flex items-center justify-center hover:bg-[#3a3a3bfa] transition-colors bg-[#1b1d1f]"
+                                className="rounded w-[28px] h-[28px] flex items-center justify-center border border-[#2f3336] hover:bg-[#39393bde] transition-colors bg-[#1f1f20ea]"
                             >
                                 {icon === 'copy' ? (
                                     <svg className="mr-0.5" viewBox="0 0 24 24" transform="matrix(-1, 0, 0, 1, 0, 0)">
@@ -172,10 +231,12 @@ export default function Register() {
                         </motion.div>
                     </div>
                     <div className="ml-1">
+                        <style>{spinAnimation}</style>
                         <button className="-mr-[1000px] rounded-full w-[40px] h-[40px] flex items-center justify-center hover:bg-[#eff3f427] transition-colors"
-                            onClick={() => setKey(get_key())}
+                            onClick={() => handleKey()}
+                            style={spinStyle}
                         >
-                            <svg className="mr-0.5" fill="#959a9e" height="28" width="28" viewBox="0 0 75 75" transform="rotate(180)">
+                            <svg className="mr-[3px]" fill="#959a9e" height="28" width="28" viewBox="0 0 75 75" transform="rotate(180)">
                                 <path d="M33.51,71.01c15.49,0,28.55-10.56,32.38-24.86h9.11L61.05,22,47.11,46.15h8c-3.44,8.56-11.83,14.63-21.61,14.63-12.84,0-23.28-10.44-23.28-23.28S20.66,14.22,33.5,14.22c6.6,0,12.57,2.77,16.81,7.2l5.26-9.11c-5.9-5.18-13.62-8.32-22.07-8.32C15.03,3.99,0,19.02,0,37.5S15.03,71.01,33.51,71.01Z"/>
                             </svg>
                         </button>
@@ -185,11 +246,17 @@ export default function Register() {
 
             {copy && (
 
-                <div className="absolute right-12 bottom-7">
-                    <button className="bg-blue-500 text-white px-8 py-1.5 rounded">
-                        Next
-                    </button>
-                </div>
+            <div className="relative left-[200px] top-[100px]">
+            <button 
+                className={`bg-blue-500 text-white px-8 py-1.5 rounded ${isHidden ? 'hidden' : ''}`} 
+                onClick={() => {
+                    goToBio();
+                    setIsHidden(true);
+                }}
+            >
+                Next
+            </button>
+            </div>
 
             )}
         </div>

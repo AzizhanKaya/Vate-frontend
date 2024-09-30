@@ -47,9 +47,9 @@ const Modal = () => {
                 exit="exit"
                 
             >
-                <div className="bg-[#161718] rounded-xl relative r-xl cool-border shadow-box w-[650px] h-[450px] items-center justify-center">
+                <div className="bg-[#161718] rounded-xl relative r-xl cool-border shadow-box w-[550px] h-[500px] items-center justify-center">
                     <div className="overflow-hidden w-full h-full p-16 rounded-xl">
-                    <Slider />
+                        <Slider />
                     </div>
                     
                 </div>

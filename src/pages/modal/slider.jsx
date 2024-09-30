@@ -24,7 +24,7 @@ export default function Slider() {
     const slideVariants = {
         hidden: { x: "100%" },
         visible: { x: 0, transition: { type: 'spring', stiffness: 120, damping: 20 }},
-        exit: { x: "-100%", transition: { type: 'spring', stiffness: 120, damping: 20 }} 
+        exit: { x: "-110%", transition: { type: 'spring', stiffness: 120, damping: 20 }} 
     };
 
     return (
@@ -35,6 +35,7 @@ export default function Slider() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
+                className="w-full h-full"
             >
                 {React.createElement(slides[currentSlide], {
                     goToLogin,

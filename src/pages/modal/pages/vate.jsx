@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function Vate({ goToLogin, goToRegister }) {
     return (
         <div className="flex-col">
