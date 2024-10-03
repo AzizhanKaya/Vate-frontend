@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react';
 import styles from './assets/Bio.module.css';
-import { useState } from 'react';
 
-export default function Bio() {
+export default function Bio({ setNextButton }) {
     const [bio, setBio] = useState('');
     const [username, setUsername] = useState('');
+    const [warning, setWarning] = useState('');
 
     const handleInputChange = (event) => {
         const { value } = event.target;
@@ -21,12 +22,40 @@ export default function Bio() {
         setUsername(event.target.value);
     };
 
+    function checkUserName() {
+
+        if (username == '') {setWarning('Username can not be empty'); return false;}
+
+        if (username.length < 3) {setWarning('Username lenght is too short'); return false;}
+
+        if (username.includes(' ')) {setWarning('Username can not contain whitespaces'); return false;}
+
+
+        return true;
+    }
+    
+    function checkBio() {
+
+        if (bio == '') {setWarning('Bio can not be empty'); return false;}
+        return true;
+    }
+
+    useEffect(() => {
+        if (checkUserName() && checkBio()) {
+            setNextButton(true);
+        }
+        else{
+            
+        }
+    }, [username, bio]);
+
+
     return (
-        <div className="w-full h-full relative">
-            <div className="font-[Vate] absolute left-1/2 transform -translate-x-1/2 p-5 -mt-5 text-[20px] text-center w-full">
+        <div className="flex flex-col">
+            <div className="font-[Vate] p-5 -mt-5 text-[20px] text-center w-full">
                 Biraz kendinden bahset!
             </div>
-            <div className="flex absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -mt-10 border-t-2 border-[#2f3336]">
+            <div className="flex border-t-2 border-[#2f3336]">
                 <div>
                     <div className={`${styles['profile-img']} mt-5`}></div>
                 </div>
@@ -50,8 +79,6 @@ export default function Bio() {
                     />
                 </div>
             </div>
-
-            
         </div>
     );
 }

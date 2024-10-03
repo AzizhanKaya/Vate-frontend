@@ -1,49 +1,81 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { slides } from './slides';
+import React, { useState } from "react";
+import { slides } from "./slides";
+import "./slider.css";
 
-export default function Slider() {
-    const [currentSlide, setCurrentSlide] = useState(0);
+const Slider = () => {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [nextPage, setNextPage] = useState(1);
+  const [nextButton, setNextButton] = useState(false);
+  const [isSliding, setSliding] = useState(false);
 
-    const goToLogin = () => {
-        setCurrentSlide(2); // Adjust to the index for the Login slide
-    };
+  const goToLogin = () => {
+    setCurrentPage(0);
+    setNextPage(-1);
+    setSliding(true);
+  };
 
-    const goToRegister = () => {
-        setCurrentSlide(1); // Adjust to the index for the Register slide
-    };
+  const goToRegister = () => {
+    setCurrentPage(0); 
+    setNextPage(1);
+    setSliding(true);
+  };
 
-    const goToBio = () => {
-        setCurrentSlide(3); // Adjust to the index for the Bio slide
-    };
+  const handleAnimationEnd = () => {
+    setCurrentPage((prev) => {
+      const newPage = prev + 1;
+      setNextPage(newPage+1);
+      console.log(newPage);
+      return newPage;
+    })
+    setSliding(false); 
+  };
 
-    const goToPost = () => {
-        setCurrentSlide(4); // Adjust to the index for the Post slide
-    };
+  function handleNext(){
+    setSliding(true);
+    setNextButton(false);
+  }
 
-    const slideVariants = {
-        hidden: { x: "100%" },
-        visible: { x: 0, transition: { type: 'spring', stiffness: 120, damping: 20 }},
-        exit: { x: "-110%", transition: { type: 'spring', stiffness: 120, damping: 20 }} 
-    };
+  const CurrentComponent = slides[currentPage];
+  const NextComponent = slides[nextPage];
 
-    return (
-        <AnimatePresence mode="wait">
-            <motion.div
-                key={currentSlide}
-                variants={slideVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="w-full h-full"
-            >
-                {React.createElement(slides[currentSlide], {
-                    goToLogin,
-                    goToRegister,
-                    goToBio,
-                    goToPost,
-                })}
-            </motion.div>
-        </AnimatePresence>
-    );
-}
+  return (
+    <div className="slider w-full h-full p-16 flex justify-center items-center">
+      
+        <div
+          className="absolute"
+          style={{
+            animation: isSliding ? 'slide-out 0.5s forwards' : ''
+          }}
+          onAnimationEnd={isSliding ? handleAnimationEnd : null}
+        >
+          <CurrentComponent
+            goToLogin={goToLogin}
+            goToRegister={goToRegister}
+            setNextButton={setNextButton}
+          />
+        </div>
+
+        {NextComponent && (
+          <div
+            className="absolute next-page"
+            style={{
+              animation: isSliding ? 'slide-in 0.5s forwards' : ''
+            }}
+          >
+            <NextComponent />
+          </div>
+        )}
+      
+
+      {nextButton && (
+        <button className="next-button"
+          onClick={handleNext}
+        >
+          Next
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default Slider;

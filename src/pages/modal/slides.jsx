@@ -6,8 +6,7 @@ import Post from "./pages/post";
 export const slides = [
     Vate,
     Register,
-    Login,
     Bio,
-    Post
+    Post,
+    Login,
 ];
-

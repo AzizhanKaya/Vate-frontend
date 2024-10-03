@@ -1,6 +1,6 @@
 export default function Vate({ goToLogin, goToRegister }) {
     return (
-        <div className="flex-col">
+        <div className="flex flex-col items-center relative">
             <div className="scale-[1.75] relative">
                 <div className="py-3 flex justify-center items-center w-full h-full relative">
                     <div className="w-[3.25rem] h-[3.25rem] rounded-full flex items-center justify-center effect-shine -mr-1">
