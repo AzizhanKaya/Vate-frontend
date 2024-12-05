@@ -1,5 +1,6 @@
 export default function Vate({ goToPage }) {
     return (
+        
         <div className="flex flex-col items-center relative pt-[100px]" style={{ willChange: 'transform'}}>
             <div className="scale-[1.75] relative">
                 <div className="py-3 flex justify-center items-center w-full h-full relative">

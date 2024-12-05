@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 import '../../assets/css/shine.css';
 import '../../assets/css/border.css';
 import Slider from './slider';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 
 const Modal = ({unMountModal}) => {
 
     const [exitModal, setExitModal] = useState(false);
+    const modalRef = useRef(null);
     
     const modalVariants = {
         hidden: {
@@ -35,10 +35,12 @@ const Modal = ({unMountModal}) => {
 
     useEffect(() => {
         if (exitModal) {
-            
-          const timer = setTimeout(() => {
-            unMountModal(true);
-          }, 500);
+            if (modalRef.current) {
+                modalRef.current.style.opacity = "0";
+            }
+            const timer = setTimeout(() => {
+                unMountModal(true);
+            }, 500);
     
           
           return () => clearTimeout(timer);
@@ -47,7 +49,7 @@ const Modal = ({unMountModal}) => {
 
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-[#090a0a] bg-opacity-75">
+        <div ref={modalRef} className="fixed inset-0 flex items-center justify-center bg-[#090a0a] bg-opacity-75 transition-opacity duration-500">
             
             <motion.div
                 variants={modalVariants}

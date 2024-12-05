@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from 'react-redux';
 import { priv_to_pub } from '@/wasm/wasm';
 import { set_keys, setProfilePic, setAccount } from '@/store/auth';
+import {  base64ToHex } from '@/utils/encoder'
 
 export default function Login({setExitModal}){
 
@@ -9,21 +10,6 @@ export default function Login({setExitModal}){
     const [key, setKey] = useState('');
 
     const dispatch = useDispatch();
-
-    function base64ToHex(bs64) {
-      const binaryString = atob(bs64);
-
-      const byteArray = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-          byteArray[i] = binaryString.charCodeAt(i);
-      }
-      let hexString = '';
-      byteArray.forEach(byte => {
-          hexString += byte.toString(16).padStart(2, '0');
-      });
-  
-      return hexString;
-    }
 
     function handleKey(event){
       setKey(event.target.value);
@@ -61,7 +47,7 @@ export default function Login({setExitModal}){
         }
       }
       catch(err){
-        console.log(await err.message);
+        console.log(err.message);
       }
 
 

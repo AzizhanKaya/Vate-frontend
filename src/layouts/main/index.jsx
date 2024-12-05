@@ -8,18 +8,18 @@ export default function MainLayout() {
     const [isModal, unMountModal] = useState(false);
 
     return (
-        <div className="w-[1265px] mx-auto flex">
+        <div className="w-[1265px] mx-auto flex min-h-screen">
             <Sidebar />
             <main className="flex-1 flex">
                 <main className="flex-1 max-w-[700px] border-x border-[#2f3336]">
                     <Outlet />
                 </main>
-                <div>
-                    <Rightbar />
-                </div>
+                
+                <Rightbar />
+                
             </main>
             {!isModal && (
-            <div className="z-30">
+            <div className="z-50">
                 <Modal unMountModal={unMountModal} />
             </div>
             )}

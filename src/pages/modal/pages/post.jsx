@@ -2,6 +2,9 @@ import { useAccount } from '@/store/auth/hooks';
 import { get_time, sign, get_hash } from '@/wasm/wasm'
 import { useEffect, useState } from 'react';
 import styles from './assets/Post.module.css';
+import { base64ToHex, timestampToDate, hexToBase64 } from '@/utils/encoder'
+
+
 export default function Post({setExitModal}){
 
     const Account = useAccount();
@@ -12,61 +15,12 @@ export default function Post({setExitModal}){
     const [isTextBox, setIsTextBox] = useState(false);
     const [post, setPost] = useState(false);
 
-    function hexToBase64(hex) {
-        if (hex === null) return;
-        
-        const bytes = [];
-        for (let i = 0; i < hex.length; i += 2) {
-            bytes.push(parseInt(hex.substr(i, 2), 16));
-        }
-        const binaryString = String.fromCharCode(...bytes);
-        return btoa(binaryString);
-    }
-    function base64ToHex(bs64) {
-        const binaryString = atob(bs64);
-
-        const byteArray = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            byteArray[i] = binaryString.charCodeAt(i);
-        }
-        let hexString = '';
-        byteArray.forEach(byte => {
-            hexString += byte.toString(16).padStart(2, '0');
-        });
-    
-        return hexString;
-    }
-
     function handleCopy(copy){
         navigator.clipboard.writeText(copy)
         .catch(err => {
             console.error('Failed to copy text: ', copy);
         });
     }
-    
-    function timestampToDate(timestamp) {
-
-        const date = new Date(timestamp * 1000);
-        
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const year = date.getFullYear();
-        
-        
-        return `${hours}:${minutes}:${seconds} - ${month}/${day}/${year}`;
-    }
-
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            setTimestamp(get_time().toString()); 
-        }, 1000);
-
-        
-        return () => clearInterval(intervalId);
-    }, []);
 
     function handlePost(post){
         setPost(post);
@@ -76,6 +30,7 @@ export default function Post({setExitModal}){
             setPostButton(false);
         }
     }
+    
     async function handlePostButton(){
         
         if (post == '') return;
@@ -135,14 +90,23 @@ export default function Post({setExitModal}){
 
     async function handlePostButtonClick(){
         if(await handlePostButton()){
-            await delay(1000);
+            await delay(500);
             setExitModal(true);
         }else{
             await delay(2000);
             setIsTextBox(false);
         }
     }
-    
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimestamp(get_time().toString());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+
     return(
     <div className="flex flex-col items-center p-8 mt-8">
         <div className="font-[Vate] text-[22px] text-center w-full p-2">
@@ -153,7 +117,7 @@ export default function Post({setExitModal}){
                 <img src={Account.profile_pic} className="w-10 h-10 rounded-full object-cover" alt="" />
                 <div>
                     <header className="leading-5 flex gap-2 items-center mb-0.5">
-                        <a className="hover:underline font-bold cursor-pointer">
+                        <a className="hover:underline font-bold cursor-pointer whitespace-nowrap">
                             {Account.username}
                         </a>
                         <div className="text-[#585858] flex items-center gap-1.5">
@@ -187,11 +151,27 @@ export default function Post({setExitModal}){
         </div>
         <div className="flex justify-center">
                 <div className={`${styles['text-box']} ${isTextBox ? 'fade-in' : 'fade-out'} ${textBoxType ? styles['success-box'] : styles['warn-box']}`}>
-                <svg viewBox="-20 -20 550 550" width="28" height="28" fill="#fff">
+                {textBoxType ? (
+                    <svg
+                    width="28"
+                    height="28"
+                    viewBox="8 8 84 84"
+                  >
+                    <circle cx="50" cy="50" r="40" strokeWidth="3" fill="white" />
+                    <path
+                      d="M30 50 L45 65 L70 35"
+                      stroke="#05995b"
+                      strokeWidth="9"
+                      fill="none"
+                    />
+                  </svg>
+                ) : (
+                    <svg viewBox="-20 -20 550 550" width="28" height="28" fill="#fff">
                     <circle cx="256" cy="256" r="246" fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="40"/>
                     <line x1="371.47" y1="140.53" x2="140.53" y2="371.47" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="40"/>
                     <line x1="371.47" y1="371.47" x2="140.53" y2="140.53" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="40"/>
                 </svg>
+                )}
                 <div className="border-r-2 mx-2 h-[25px]"></div>
                 <div className="font-semibold">
                     {textBox}

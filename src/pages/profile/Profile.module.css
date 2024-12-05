@@ -1,0 +1,73 @@
+.header {
+    z-index: -1;
+    height: 175px;
+    border-bottom: 1px solid #2f3336;
+    box-shadow: 0px -250px 200px 200px rgba(94, 207, 255, 0.3);
+    border-bottom-right-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.banner{
+    position: absolute;
+    background-color: #161616;
+    width: 100%;
+    height: 25%;
+    border-bottom-right-radius: 20px;
+}
+
+.profileImage{
+    border-radius: 9999px;
+    width: 20%;
+    aspect-ratio: 1;
+    position: absolute;
+    top: 15%;
+    left: 3%;
+    border: 3px solid #000000;
+    background-color: #0a0a0a;
+    object-fit: cover;
+}
+.user_info{
+    position: absolute;
+    left: 25%;
+    top: 30%;
+    width: 73%;
+    height: 55%;
+    font-size: 1rem;
+    text-underline-offset: 3px;
+}
+.username {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: underline;
+    white-space: nowrap;
+}
+
+.pubkey {
+    color: #434344;
+    width: 300px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bio {
+    padding: 1%;
+    padding-left: 0%;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    width: 100%;
+    height: 100%;
+}
+.time {
+    color: #7d7d7e;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    width: 100%;     
+    font-size: 0.75rem;
+    height: 100%;
+}
+.posts{
+    position: relative;
+}

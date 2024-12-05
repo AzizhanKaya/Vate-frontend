@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
 import { set_keys } from '@/store/auth';
+import { base64ToHex } from '@/utils/encoder'
 
 
 export default function Key({setCopy}){
@@ -32,7 +33,7 @@ export default function Key({setCopy}){
         let iteration = 0;
 
         let final = get_key();
-        console.log(final);
+        
 
         if (isSpinning) return;
 
@@ -58,21 +59,6 @@ export default function Key({setCopy}){
             iteration += 1;
 
         }, 20);
-    }
-
-    function base64ToHex(bs64) {
-        const binaryString = atob(bs64);
-
-        const byteArray = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            byteArray[i] = binaryString.charCodeAt(i);
-        }
-        let hexString = '';
-        byteArray.forEach(byte => {
-            hexString += byte.toString(16).padStart(2, '0');
-        });
-    
-        return hexString;
     }
 
     const handleCopy = async () => {

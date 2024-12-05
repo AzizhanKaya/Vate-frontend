@@ -3,10 +3,13 @@ import Menu from "./menu";
 
 export default function Sidebar() {
 	return (
-		<aside className="w-[270px] max-h-screen min-h-screen px-2 flex flex-col sticky">
-			<Logo />
-			<Menu />
-			
-		</aside>
+		<div>
+			<div className="sticky top-0">
+				<aside className="w-[270px] max-h-screen px-2 flex flex-col mt-3">
+					<Logo />
+					<Menu />
+				</aside>
+			</div>
+		</div>
 	)
 }

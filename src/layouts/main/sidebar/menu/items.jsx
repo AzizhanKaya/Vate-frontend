@@ -1,8 +1,3 @@
-import store from "../../../../store"
-
-
-
-
 export const MenuItems = [
 	{
 		path: '/',
@@ -72,7 +67,7 @@ export const MenuItems = [
 		}
 	},
 	{
-		path: `/${store.getState()?.auth?.currentAccount?.username}`,
+		path: `/profile`,
 		title: 'Profile',
 		icon: {
 			active: (

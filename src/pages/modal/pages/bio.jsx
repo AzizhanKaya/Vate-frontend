@@ -4,6 +4,7 @@ import { useAccount } from '@/store/auth/hooks';
 import { sign , get_hash } from '@/wasm/wasm'
 import { useDispatch } from 'react-redux';
 import { setAccount, setProfilePic } from '@/store/auth';
+import { base64ToHex } from '@/utils/encoder'
 
 export default function Bio({goToPage}) {
     const [bio, setBio] = useState('');
@@ -36,20 +37,7 @@ export default function Bio({goToPage}) {
         setUsername(event.target.value);
     };
 
-    function base64ToHex(bs64) {
-        const binaryString = atob(bs64);
-
-        const byteArray = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            byteArray[i] = binaryString.charCodeAt(i);
-        }
-        let hexString = '';
-        byteArray.forEach(byte => {
-            hexString += byte.toString(16).padStart(2, '0');
-        });
     
-        return hexString;
-    }
 
     async function sha256(bytes) {
         const buffer = new Uint8Array(bytes).buffer;
@@ -68,14 +56,19 @@ export default function Bio({goToPage}) {
 
         if (username.length < 3) {setWarning('Username lenght is too short'); return false;}
 
-        if (username.includes(' ')) {setWarning('Username can not contain whitespaces'); return false;}
-
         return true;
     }
     
     function checkBio() {
 
         if (bio == '') {setWarning('Bio can not be empty'); return false;}
+        
+        return true;
+    }
+
+    function checkProfilePic() {
+
+        if (profileImage == null) {setIsWarning(true); setWarning('You have to upload a profile picture'); return false;}
         
         return true;
     }
@@ -97,7 +90,8 @@ export default function Bio({goToPage}) {
     };
 
     const handleNext = async () => {
-        if (!(checkUserName() && checkBio())) return;
+        if (!(checkUserName() && checkBio() && checkProfilePic())) return;
+        setIsWarning(false);
 
         try {
             const payload = `${Account.pub_key}:${username}:${bio}`;
@@ -164,7 +158,7 @@ export default function Bio({goToPage}) {
 
             const hash = await sha256(img_bytes);
             const signed = await sign(base64ToHex(Account.priv_key), hash);
-            console.log(img_bytes);
+            
             const url = `http://192.168.1.25:3000/upload/${Account.pub_key}/pp.${img_type}`;
             const response = await fetch(url, {
                 method: 'POST',
@@ -216,6 +210,7 @@ export default function Bio({goToPage}) {
                                             height: '100%',
                                             objectFit: 'cover',
                                             borderRadius: '50%',
+                                            
                                         }}
                                     />
                                 )}
