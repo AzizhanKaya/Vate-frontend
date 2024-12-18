@@ -10,6 +10,8 @@ const Modal = ({unMountModal}) => {
 
     const [exitModal, setExitModal] = useState(false);
     const modalRef = useRef(null);
+
+    
     
     const modalVariants = {
         hidden: {

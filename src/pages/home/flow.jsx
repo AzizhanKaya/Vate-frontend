@@ -1,67 +1,77 @@
 import Post from '../../components/post';
 import { get_time } from '@/wasm/wasm'
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import SendPost from "@/components/send-post.jsx"
-import { SubPostContext } from "../../contexts/sub-post";
-import { useContext } from "react";
 
 export default function Flow({ Topic }) {
 
   const [posts, setPosts] = useState([]);
-  const { refresh, setRefresh } = useContext(SubPostContext);
+  const prevTopicRef = useRef();
+  
 
-  useEffect(() => {
-    async function get_posts() {
-      
+  async function get_posts(reset) {
 
-      try {
+    try {
 
-        let url;
-        let last_post;
+      let url;
+      let last_post;
 
-        if (posts.length != 0) {
-          last_post = posts[0];
-          url = `http://192.168.1.25:3000/posts?sub=${Topic}&t=${last_post.time}&d=true`;
-        } else{
-          const timestamp = get_time().toString();
-          url = `http://192.168.1.25:3000/posts?sub=${Topic}&t=${timestamp}&d=false`;
-        }
+      if (posts.length == 0 || reset) {
+        const timestamp = get_time().toString();
+        url = `http://192.168.1.25:3000/posts?sub=${Topic}&t=${timestamp}&d=false`;
+      } else{
+        last_post = posts[0];
+        url = `http://192.168.1.25:3000/posts?sub=${Topic}&t=${last_post.time}&d=true`;
+      }
 
-        const response = await fetch(url, {
-          method: 'GET'
-        });
+      const response = await fetch(url, {
+        method: 'GET'
+      });
 
-        if (response.ok) {
+      if (response.ok) {
 
-          let data = await response.json();
+        let data = await response.json();
 
-          if (posts.length !== 0) {
-            const merged_posts = [...data, ...posts];
-            setPosts(merged_posts);
-          } else {
-            setPosts(data);
-          }
-          
-        }
-
-        else if(response.status == 404){
-          console.log("No posts found on", Topic);
-        }
-
-        else {
-          console.log("Server error while getting posts:", await response.text());
+        if (posts.length == 0 || reset) {
+          setPosts(data);
+        } else {
+          const merged_posts = [...data, ...posts];
+          setPosts(merged_posts);
         }
         
-      } catch (e) {
-        console.log("Error while getting posts:", e.message);
       }
+
+      else if(response.status == 404){
+        console.log("No posts found on", Topic);
+
+        if(reset) {
+          setPosts([]);
+        }
+      }
+
+      else {
+        console.log("Server error while getting posts:", await response.text());
+      }
+      
+    } catch (e) {
+      console.log("Error while getting posts:", e.message);
+    }
+  }
+
+  useEffect(() => {
+
+    if (prevTopicRef.current !== Topic) {
+        get_posts(true);
+        return;
     }
 
-    get_posts();
-  }, [Topic, refresh]);
+    prevTopicRef.current = Topic;
+    get_posts(false);
 
-  const handlePostSent = () => {
-    setRefresh((prev) => !prev);
+  }, [Topic]);
+
+  function handlePostSent() {
+    get_posts();
   }
 
   return (

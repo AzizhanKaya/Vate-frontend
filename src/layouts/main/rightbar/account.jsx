@@ -1,9 +1,16 @@
 import {Popover, PopoverButton, PopoverPanel, Transition} from "@headlessui/react"
 import {useAccount} from "@/store/auth/hooks"
+import { useDispatch } from "react-redux";
+import { logOut } from "../../../store/auth";
 
 export default function Account(){
 
-	const account = useAccount()
+	const account = useAccount();
+	const dispatch = useDispatch();
+
+	function onLogOut(){
+		dispatch(logOut());
+	}
 
     return(
         
@@ -49,7 +56,7 @@ export default function Account(){
 								</div>
 								
 								<div className="gap-2.5 rounded-full transition-colors inline-flex p-3 items-center hover:bg-[#eff3f41a] mb-2 cursor-pointer"
-								
+									onClick={onLogOut}
 								>
 
 									<svg width="28px" height="28px" viewBox="0 0 50 50">

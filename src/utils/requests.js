@@ -48,24 +48,52 @@ export async function getUserInfo(pub_key) {
     }
 }
 
-async function likePost(post) {
+export async function likePost(post) {
 
   try {
 
       const url = `http://192.168.1.25:3000/like`;
       const response = await fetch(url, {
-          method: 'POST'
+          method: 'POST',
+          body: JSON.stringify(post)
       });
 
-      if (response.ok){
+      return response;
+  } 
+  catch(err)
+  {
+      console.log(err.message);
+  }
+}
 
-          const data = await response.json();
+export async function deletePost(post, headers) {
 
-          return data;
-      
-      } else {
-          console.log('Profile User Info Error:', await response.text());
-      }
+  try {
+
+      const url = `http://192.168.1.25:3000/delete`;
+      const response = await fetch(url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(post)
+      });
+
+      return response;
+  } 
+  catch(err)
+  {
+      console.log(err.message);
+  }
+}
+
+export async function getTopics(num) {
+
+  try {
+      const url = `http://192.168.1.25:3000/topics?n=${num}`;
+      const response = await fetch(url, {
+          method: 'GET'
+      });
+
+      return response;
   } 
   catch(err)
   {
@@ -93,7 +121,7 @@ export async function get_sub_posts(post) {
     }
 
     else if(response.status == 404){
-      console.log("No sub posts found on", post);
+      return;
     }
 
     else {

@@ -3,6 +3,7 @@ import { get_time, sign, get_hash } from '@/wasm/wasm'
 import { useEffect, useState } from 'react';
 import styles from './assets/Post.module.css';
 import { base64ToHex, timestampToDate, hexToBase64 } from '@/utils/encoder'
+import { clearAllLikes } from '@/utils/database';
 
 
 export default function Post({setExitModal}){
@@ -90,6 +91,7 @@ export default function Post({setExitModal}){
 
     async function handlePostButtonClick(){
         if(await handlePostButton()){
+            await clearAllLikes();
             await delay(500);
             setExitModal(true);
         }else{

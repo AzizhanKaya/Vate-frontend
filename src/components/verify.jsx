@@ -3,7 +3,7 @@ import { Transition } from '@headlessui/react';
 import { verify } from '@/wasm/wasm';
 import { getPostHash } from '../utils/encoder';
 
-export default function Verify({ post, top_post }) {
+export default function Verify({ post }) {
 
   const [showText, setShowText] = useState(false);
   const [verified, setVerified] = useState(true);
@@ -12,7 +12,7 @@ export default function Verify({ post, top_post }) {
     const hash = getPostHash(post);
     const isVerified = verify(post.pub_key, hash, post.sign);
     setVerified(isVerified);
-  }, []);
+  }, [post]);
 
   return (
     <div

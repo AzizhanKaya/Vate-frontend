@@ -2,7 +2,7 @@ import { useAccount } from '@/store/auth/hooks';
 import { get_time, sign, get_hash } from '@/wasm/wasm';
 import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { base64ToHex, timestampToDate, hexToBase64, getPostHash, formatPost, getSubPostHash } from '@/utils/encoder';
+import { base64ToHex, timestampToDate, hexToBase64, getPostHash, formatPost, getSubPostHash, nthPost } from '@/utils/encoder';
 import { get_user_posts } from '@/utils/requests';
 
 export default function SendPost({ Topic, onPostSent, sub_post }) {
@@ -67,20 +67,18 @@ export default function SendPost({ Topic, onPostSent, sub_post }) {
             } else {
                 const user_posts = await get_user_posts(account?.pub_key);
                 const last_post = formatPost(user_posts[0]);
-                post.past_hash = getPostHash(last_post)
+                post.past_hash = getPostHash(last_post);
             }
 
             const hash = getPostHash(post);
             post.sign = sign(base64ToHex(account.priv_key), hash);
-
             if (sub_post) {
-                post = {
-                    ...sub_post,
-                    post: post
-                }
+                const sub_post_copy = {...sub_post};
+                const last_sub_post = nthPost(sub_post_copy, -1);
+                last_sub_post.post = post;
+                post = sub_post_copy;
             }
-
-            console.log(post);
+            
             
             const response = await fetch('http://192.168.1.25:3000/post', {
                 method: 'POST',

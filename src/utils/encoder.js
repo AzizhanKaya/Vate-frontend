@@ -45,7 +45,7 @@ export function timestampToDate(timestamp) {
 export function getPostHash(post){
     
     const post_h = `${post.past_hash}:${post.pub_key}:${post.subject}:${post.message}:${post.time}`
-    
+
     return get_hash(post_h);
 }
 
@@ -83,7 +83,8 @@ export function nthPost(post, nth) {
     let len = lenPost(post);
     if (len === 0) return null;
 
-    nth = Math.abs(nth) % len;
+    nth = ((nth % len) + len) % len;
+    
     for (let i = 0; i < nth; i++) {
         current_post = current_post.post;
     }
@@ -92,6 +93,7 @@ export function nthPost(post, nth) {
 }
 
 export function formatPost(post) {
+    if (!post) return;
     let copy_post = structuredClone(post);
     let current_post = copy_post;
 
@@ -103,4 +105,12 @@ export function formatPost(post) {
     }
 
     return copy_post;
+}
+
+export function addLinkedList(list, post){
+    list = structuredClone(list);
+
+    nthPost(list, -1).post = post
+
+    return list;
 }
